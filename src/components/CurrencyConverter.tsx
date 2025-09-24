@@ -106,7 +106,7 @@ export const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Currency Converter</CardTitle>
+        <CardTitle data-testid="converter-title">Currency Converter</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -141,27 +141,28 @@ export const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
         </ConversionGrid>
 
         {conversionResult && isValidAmount && (
-          <ResultCard>
-            <ResultAmount>
+          <ResultCard data-testid="conversion-result">
+            <ResultAmount data-testid="converted-amount">
               {formatCurrency(conversionResult.toAmount, 2)} {conversionResult.toCurrency}
             </ResultAmount>
 
-            <ResultDetails>
+            <ResultDetails data-testid="conversion-details">
               {formatCurrency(conversionResult.fromAmount, 2)} CZK ={' '}
               {formatCurrency(conversionResult.toAmount, 2)} {conversionResult.toCurrency}
             </ResultDetails>
 
             <ConversionInfo>
-              <RateInfo>
+              <RateInfo data-testid="exchange-rate">
                 1 {conversionResult.toCurrency} = {formatCurrency(conversionResult.rate, 4)} CZK
               </RateInfo>
-              <Code>{date}</Code>
+              <Code data-testid="exchange-date">{date}</Code>
             </ConversionInfo>
           </ResultCard>
         )}
 
         {!isValidAmount && amount && (
           <ResultCard
+            data-testid="error-message"
             style={{ backgroundColor: theme.colors.red[50], borderColor: theme.colors.red[200] }}
           >
             <div style={{ color: theme.colors.red[600], fontSize: theme.fontSizes.sm }}>
@@ -171,7 +172,10 @@ export const CurrencyConverter: React.FC<CurrencyConverterProps> = ({
         )}
 
         {currencyOptions.length === 0 && (
-          <ResultCard style={{ backgroundColor: theme.colors.gray[50] }}>
+          <ResultCard
+            data-testid="no-data-message"
+            style={{ backgroundColor: theme.colors.gray[50] }}
+          >
             <div style={{ color: theme.colors.gray[600], fontSize: theme.fontSizes.sm }}>
               No exchange rates available for conversion
             </div>
