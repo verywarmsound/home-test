@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+package-lock.json
+
+# Build outputs
+dist
+build
+*.tsbuildinfo
+
+# Coverage reports  
+coverage
+
+# Test outputs
+test-results
+playwright-report
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE files
+.vscode
+.idea
+
+# Logs
+*.log
+
+# Cache
+.cache
