@@ -59,8 +59,7 @@ src/
 └── App.tsx              # Main application component
 
 tests/                   # End-to-end tests
-├── example.spec.ts
-└── tests-examples/
+└── currency-converter.spec.ts
 ```
 
 ## 🧪 Testing
