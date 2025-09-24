@@ -1,5 +1,5 @@
 import type { ExchangeRatesData, CurrencyRate } from '../types';
-import { NUMBER_FORMAT } from '../const.ts';
+import { NUMBER_FORMAT } from '../const';
 
 /**
  * Parses the CNB TXT format exchange rates data

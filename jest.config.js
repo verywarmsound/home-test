@@ -13,6 +13,7 @@ export default {
         jsx: 'react-jsx',
         esModuleInterop: true,
         allowSyntheticDefaultImports: true,
+        types: ['jest', '@testing-library/jest-dom'],
       },
     }],
   },

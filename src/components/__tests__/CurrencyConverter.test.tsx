@@ -36,7 +36,6 @@ describe('CurrencyConverter', () => {
     expect(screen.getByText('Currency Converter')).toBeInTheDocument();
     expect(screen.getByLabelText('Amount in CZK')).toBeInTheDocument();
     expect(screen.getByLabelText('Convert to')).toBeInTheDocument();
-    expect(screen.getByRole('checkbox', { name: /real-time conversion/i })).toBeInTheDocument();
   });
 
   it('should display conversion result for default values', () => {
@@ -44,17 +43,12 @@ describe('CurrencyConverter', () => {
 
     // Default amount is 100 CZK, default currency is USD
     // 100 / 22.456 * 1 = 4.45 USD
-    expect(screen.getByText(/4\.45 USD/)).toBeInTheDocument();
     expect(screen.getByText(/100\.00 CZK = 4\.45 USD/)).toBeInTheDocument();
   });
 
-  it('should update conversion when amount changes in real-time mode', async () => {
+  it('should update conversion when amount changes', async () => {
     const user = userEvent.setup();
     renderWithTheme(<CurrencyConverter {...defaultProps} />);
-
-    // Ensure real-time mode is enabled (should be by default)
-    const realtimeCheckbox = screen.getByRole('checkbox', { name: /real-time conversion/i });
-    expect(realtimeCheckbox).toBeChecked();
 
     const amountInput = screen.getByLabelText('Amount in CZK');
 
@@ -62,13 +56,8 @@ describe('CurrencyConverter', () => {
     await user.clear(amountInput);
     await user.type(amountInput, '200');
 
-    // Wait for debounced update (300ms debounce + render time)
-    await waitFor(
-      () => {
-        expect(screen.getByText(/8\.90 USD/)).toBeInTheDocument();
-      },
-      { timeout: 1000 }
-    );
+    // Should show updated conversion: 200 / 22.456 * 1 = 8.91 USD (rounded)
+    expect(screen.getByText(/200\.00 CZK = 8\.91 USD/)).toBeInTheDocument();
   });
 
   it('should update conversion when currency changes', async () => {
@@ -80,48 +69,10 @@ describe('CurrencyConverter', () => {
     await user.selectOptions(currencySelect, 'EUR');
 
     // 100 / 24.260 * 1 = 4.12 EUR
-    expect(screen.getByText(/4\.12 EUR/)).toBeInTheDocument();
+    expect(screen.getByText(/100\.00 CZK = 4\.12 EUR/)).toBeInTheDocument();
   });
 
-  it('should show manual convert button when real-time mode is disabled', async () => {
-    const user = userEvent.setup();
-    renderWithTheme(<CurrencyConverter {...defaultProps} />);
-
-    const realtimeCheckbox = screen.getByRole('checkbox', { name: /real-time conversion/i });
-
-    // Disable real-time mode
-    await user.click(realtimeCheckbox);
-
-    expect(screen.getByRole('button', { name: /convert/i })).toBeInTheDocument();
-  });
-
-  it('should handle manual conversion when real-time mode is disabled', async () => {
-    const user = userEvent.setup();
-    renderWithTheme(<CurrencyConverter {...defaultProps} />);
-
-    // Disable real-time mode
-    const realtimeCheckbox = screen.getByRole('checkbox', { name: /real-time conversion/i });
-    await user.click(realtimeCheckbox);
-
-    const amountInput = screen.getByLabelText('Amount in CZK');
-    const convertButton = screen.getByRole('button', { name: /convert/i });
-
-    // Change amount but don't expect immediate update
-    await user.clear(amountInput);
-    await user.type(amountInput, '500');
-
-    // Should still show old result
-    expect(screen.getByText(/4\.45 USD/)).toBeInTheDocument();
-
-    // Click convert button
-    await user.click(convertButton);
-
-    // Now should show updated result
-    // 500 / 22.456 * 1 = 22.27 USD
-    expect(screen.getByText(/22\.27 USD/)).toBeInTheDocument();
-  });
-
-  it('should show error for invalid amount', async () => {
+  it('should show validation error for invalid amount', async () => {
     const user = userEvent.setup();
     renderWithTheme(<CurrencyConverter {...defaultProps} />);
 
@@ -133,6 +84,19 @@ describe('CurrencyConverter', () => {
     await waitFor(() => {
       expect(screen.getByText(/Please enter a valid amount greater than 0/)).toBeInTheDocument();
     });
+  });
+
+  it('should handle empty amount input', async () => {
+    const user = userEvent.setup();
+    renderWithTheme(<CurrencyConverter {...defaultProps} />);
+
+    const amountInput = screen.getByLabelText('Amount in CZK');
+
+    // Clear the input
+    await user.clear(amountInput);
+
+    // Should not show conversion result when amount is empty
+    expect(screen.queryByText(/CZK =/)).not.toBeInTheDocument();
   });
 
   it('should display rate information', () => {
