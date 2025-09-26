@@ -1,6 +1,7 @@
 # CZK Exchange Rates Application
 
 A modern React application that displays current exchange rates from the Czech National Bank (CNB) with a built-in currency converter. Built with TypeScript, React Query, and Styled Components.
+Deployed to Vercel: https://home-task-five.vercel.app
 
 ## ✨ Features
 
